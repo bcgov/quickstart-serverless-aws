@@ -16,12 +16,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    environment: dev
     steps:
       - name: checkout the repo and building the Backend
         uses: actions/checkout@v2
@@ -40,18 +35,18 @@ jobs:
         run: |
           cd server/lambda
           npm install
-          
+
       - name: Deploying back-end using terraform
         run: |
           cd server
           cat <<EOF > backend.hcl
-          bucket = "${{ secrets.S3_BACKEND_NAME }}"
-          key = "${{ secrets.LICENCEPLATE }}/${{ env.environment }}/serverless-app.tfstate"
-          dynamodb_table = "terraform-remote-state-lock-${{ secrets.LICENCEPLATE }}"
+          bucket = "${{ vars.S3_BACKEND_NAME }}"
+          key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/serverless-app.tfstate"
+          dynamodb_table = "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}"
           EOF
           terraform init -backend-config=backend.hcl
           terraform apply -auto-approve
-          
+
       - name: Building front-end and deploying Frontend using terraform
         run: |
           cd server
@@ -60,9 +55,9 @@ jobs:
           npm install
           CI=false npm run build
           cat <<EOF > backend.hcl
-          bucket = "${{ secrets.S3_BACKEND_NAME }}"
-          key = "${{ secrets.LICENCEPLATE }}/${{ env.environment }}/serverless-app.tfstate"
-          dynamodb_table = "terraform-remote-state-lock-${{ secrets.LICENCEPLATE }}"
+          bucket = "${{ vars.S3_BACKEND_NAME }}"
+          key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/serverless-app.tfstate"
+          dynamodb_table = "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}"
           EOF
           terraform init -backend-config=backend.hcl
           terraform apply -auto-approve
