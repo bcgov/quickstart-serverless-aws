@@ -34,11 +34,12 @@ resource "aws_s3_bucket_versioning" "buckets" {
     status = "Enabled"
   }
 }
+output "root_path" { value = path.root }
 
 data "archive_file" "hello_world_lambda" {
   type        = "zip"
-  source_dir  = "lambda/hello_world"
-  output_path = "hello_world.zip"
+  source_dir  = "${path.root}/lambda/hello_world"
+  output_path = "${path.root}/hello_world.zip"
 }
 
 resource "aws_s3_object" "hello_world_lambda_server" {
