@@ -4,6 +4,10 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.0.0"
+    },
+    archive = {
+      source  = "hashicorp/archive"
+      version = "2.3.0"
     }
   }
 }
@@ -33,15 +37,15 @@ resource "aws_s3_bucket_versioning" "buckets" {
 
 data "archive_file" "hello_world_lambda" {
   type        = "zip"
-  source_dir  = "${path.module}/lambda/hello_world/app"
-  output_path = "${path.module}/hello_world.zip"
+  source_dir  = "lambda/hello_world"
+  output_path = "hello_world.zip"
 }
 
 resource "aws_s3_object" "hello_world_lambda_server" {
   bucket = aws_s3_bucket.buckets["lambda-bucket"].id
   key    = "hello_world.zip"
   source = data.archive_file.hello_world_lambda.output_path
-  etag   = filemd5(data.archive_file.hello_world_lambda.output_md5)
+  etag   = filemd5(data.archive_file.hello_world_lambda.output_path)
   #checkov:skip=CKV_AWS_186:Encryption is automatically done by ASEA
 }
 
