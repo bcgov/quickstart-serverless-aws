@@ -19,9 +19,9 @@ jobs:
       - name: checkout the repo and building the Backend
         uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-go@v4
         with:
-          node-version: 14
+          go-version: '1.19'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -31,8 +31,8 @@ jobs:
 
       - name: building the backend
         run: |
-          cd server/lambda
-          npm install
+          cd server/lambda/hello-world
+          go mod download
       - name: Deploying back-end using terraform
         run: |
 
