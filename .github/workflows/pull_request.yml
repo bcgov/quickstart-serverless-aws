@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     environment: dev
     steps:
       - name: checkout the repo and building the Backend
@@ -34,9 +34,13 @@ jobs:
           cd server/lambda/hello-world
           go mod download
           GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o app main.go
+          pwd
+          ls -la
       - name: Deploying back-end using terraform
         run: |
-
+          pwd
+          ls -la 
+          ls -R server
           echo "**************"
           echo "${{ vars.LICENCEPLATE }}"
           echo "**************"
