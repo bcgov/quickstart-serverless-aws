@@ -33,7 +33,7 @@ resource "aws_s3_bucket_versioning" "buckets" {
 
 data "archive_file" "hello_world_lambda" {
   type        = "zip"
-  source_dir  = "${path.module}/lambda/hello_world"
+  source_dir  = "${path.module}/lambda/hello_world/app"
   output_path = "${path.module}/hello_world.zip"
 }
 
