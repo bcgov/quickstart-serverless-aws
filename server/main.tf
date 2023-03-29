@@ -158,7 +158,7 @@ resource "aws_lambda_function" "hello_world" {
   s3_bucket = aws_s3_bucket.buckets["lambda-bucket"].id
   s3_key    = aws_s3_object.hello_world_lambda_server.key
   runtime                        = "go1.x"
-  handler                        = "./lambda.handler"
+  handler                        = "./app"
   reserved_concurrent_executions = -1
 
   source_code_hash = data.archive_file.hello_world_lambda.output_base64sha256
