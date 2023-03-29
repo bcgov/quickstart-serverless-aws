@@ -7,6 +7,7 @@ on:
 env:
   environment: dev
   TF_VERSION: 1.2.2
+  TF_LOG: TRACE
 
 permissions:
   id-token: write # This is required for requesting the JWT
