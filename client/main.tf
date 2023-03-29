@@ -1,6 +1,6 @@
 terraform {
- backend "s3" {}
-required_providers {
+  backend "s3" {}
+  required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.0.0"
@@ -25,7 +25,7 @@ resource "aws_s3_bucket" "web_distribution" {
 resource "aws_s3_bucket_versioning" "web_distribution" {
   bucket = aws_s3_bucket.web_distribution.id
   versioning_configuration {
-      status = "Enabled"
+    status = "Enabled"
   }
 }
 resource "aws_cloudfront_origin_access_identity" "web_distribution" {
@@ -96,7 +96,7 @@ resource "aws_cloudfront_distribution" "web_distribution" {
   }
 }
 locals {
-  src_dir = "./dist/"
+  src_dir          = "./dist/"
   content_type_map = {
     html = "text/html",
     ico  = "image/x-icon",
