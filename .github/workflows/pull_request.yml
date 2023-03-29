@@ -86,5 +86,6 @@ jobs:
           cd ../client
           npm install
           CI=false npm run build
+          terraform init -backend-config=backend.hcl
           terraform apply -auto-approve
       
