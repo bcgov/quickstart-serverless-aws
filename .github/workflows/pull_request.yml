@@ -57,6 +57,7 @@ jobs:
   build-deploy-frontend:
     runs-on: ubuntu-22.04
     environment: dev
+    needs: build-deploy-api
     steps:
       - uses: actions/checkout@v3
 
