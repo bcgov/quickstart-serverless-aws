@@ -76,17 +76,9 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
       - name: Building front-end
         run: |
-          cd server
-          cat <<EOF > backend.hcl
-          bucket = "${{ vars.S3_BACKEND_NAME }}"
-          key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/serverless-frontend.tfstate"
-          dynamodb_table = "terraform-remote-state-lock-frontend-${{ vars.LICENCEPLATE }}"
-          EOF
-          terraform init -backend-config=backend.hcl
-          terraform output > ../client/.env
-          cd ../client
+          cd client
           npm install
-          CI=false npm run build
+          npm run build
 
       - name: Deploying front-end using terraform
         run: |
