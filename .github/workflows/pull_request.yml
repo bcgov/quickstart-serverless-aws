@@ -73,7 +73,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2.0.2
         with:
           terraform_version: ${{ env.TF_VERSION }}
-      - name: Building front-end and deploying Frontend using terraform
+      - name: Building front-end
         run: |
           cd server
           cat <<EOF > backend.hcl
@@ -86,6 +86,14 @@ jobs:
           cd ../client
           npm install
           CI=false npm run build
-          terraform init -backend-config=backend.hcl
-          terraform apply -auto-approve
-      
+
+      - name: Deploying front-end using terraform
+        run: |
+           cd client
+           cat <<EOF > backend.hcl
+           bucket = "${{ vars.S3_BACKEND_NAME }}"
+           key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/serverless-frontend.tfstate"
+           dynamodb_table = "terraform-remote-state-lock-frontend-${{ vars.LICENCEPLATE }}"
+           EOF
+           terraform init -backend-config=backend.hcl
+           terraform apply -auto-approve
