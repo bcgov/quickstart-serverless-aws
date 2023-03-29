@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "web_distribution" {
     actions = ["s3:GetObject"]
     principals {
       type        = "AWS"
-      identifiers = ["${aws_cloudfront_origin_access_identity.web_distribution.iam_arn}"]
+      identifiers = [aws_cloudfront_origin_access_identity.web_distribution.iam_arn]
     }
     resources = ["${aws_s3_bucket.web_distribution.arn}/*"]
   }
@@ -96,7 +96,7 @@ resource "aws_cloudfront_distribution" "web_distribution" {
   }
 }
 locals {
-  src_dir = "./build/"
+  src_dir = "./dist/"
   content_type_map = {
     html = "text/html",
     ico  = "image/x-icon",
@@ -109,7 +109,7 @@ locals {
   }
 }
 
-resource "aws_s3_bucket_object" "site_files" {
+resource "aws_s3_bucket" "site_files" {
   # Enumerate all the files in ./src
   for_each = fileset(local.src_dir, "**")
 

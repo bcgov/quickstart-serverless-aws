@@ -62,4 +62,4 @@ jobs:
           dynamodb_table = "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}"
           EOF
           terraform init -backend-config=backend.hcl
-          terraform plan
+          terraform apply -auto-approve
