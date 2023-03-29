@@ -104,7 +104,8 @@ locals {
     json = "application/json",
     svg  = "image/svg+xml",
     ttf  = "font/ttf",
-    txt  = "text/txt"
+    txt  = "text/txt",
+    css  = "text/css",
 
   }
 }
