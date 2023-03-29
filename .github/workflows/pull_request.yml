@@ -6,6 +6,7 @@ on:
     branches: [main]
 env:
   environment: dev
+  TF_VERSION: 1.2.2
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -28,7 +29,10 @@ jobs:
         with:
           role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
           aws-region: ca-central-1
-
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
       - name: building the backend
         run: |
           cd server/lambda/hello_world
@@ -65,7 +69,10 @@ jobs:
         with:
           role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
           aws-region: ca-central-1
-
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
       - name: Building front-end and deploying Frontend using terraform
         run: |
           cd server
