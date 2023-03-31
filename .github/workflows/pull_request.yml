@@ -48,7 +48,7 @@ jobs:
           cd client
           npm install
           npm run build
-          ln -s ${{github.workspace}}/client/dist frontend_build
+          ln -s ${{ github.workspace }} /client/dist frontend_build
           cd ~
           pwd
           ls -la frontend_build
