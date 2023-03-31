@@ -7,6 +7,7 @@ locals {
   s3_bucket      = get_env("s3_bucket", "") # s3 bucket for frontend app
   origin_id      = get_env("origin_id", "") # cloudfront origin id
   target_env     = get_env("target_env", "") # target environment
+  frontend_build_path = get_env("frontend_build_path", "") # frontend build path
 }
 
 terraform {
@@ -28,4 +29,5 @@ inputs = {
   bucket         = local.bucket
   key            = local.key
   dynamodb_table = local.dynamodb_table
+  frontend_build_path = local.frontend_build_path
 }
