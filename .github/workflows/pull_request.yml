@@ -57,7 +57,7 @@ jobs:
         working-directory: ${{ env.TG_CLIENT_SRC_PATH }}/${{ env.TG_WORKSPACE }}
         env:
           client_bucket_name: ${{ vars.S3_BACKEND_NAME }}
-          key: "${{ vars.LICENCEPLATE }}/${{ github.event.number }}/quickstart-frontend.tfstate"
+          client_bucket_key: "${{ vars.LICENCEPLATE }}/${{ github.event.number }}/quickstart-frontend.tfstate"
           dynamodb_table: "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}-${{ github.event.number }}"
           origin_id: ${{ github.event.number }}
           app_version: ${{ github.event.number }}
