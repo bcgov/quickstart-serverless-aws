@@ -5,19 +5,6 @@ resource "aws_s3_bucket" "quickstart-frontend" {
     Name = var.s3_bucket_name
   }
 }
-resource "aws_s3_object" "quickstart-frontend-files" {
-  # Enumerate all the files in ./src
-  for_each = fileset(var.frontend_build_path, "**")
-
-  #checkov:skip=CKV_AWS_186:S3 Encryption is automatically done by ASEA
-
-  # Create an object from each
-  bucket = aws_s3_bucket.quickstart-frontend.id
-  key    = each.value
-  source = "${var.frontend_build_path}/${each.value}"
-
-  content_type = lookup(var.content_type_map, regex("\\.(?P<extension>[A-Za-z0-9]+)$", each.value).extension, "application/octet-stream")
-}
 
 resource "aws_s3_bucket_acl" "quickstart-frontend-acl" {
   bucket = "${var.s3_bucket}-${var.target_env}"

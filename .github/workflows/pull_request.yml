@@ -48,6 +48,15 @@ jobs:
           cd client
           npm install
           npm run build
+      ### Upload dist to S3 ###
+      - name: Deploy to Dev S3
+        env:
+          s3_bucket: quickstart-frontend-${{ github.event.number }}
+          dir_name: ${{ github.event.number }}
+        run: |
+          pwd
+          cd client
+          aws s3 sync dist s3://$s3_bucket/$dir_name/
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v1.3.1
         with:

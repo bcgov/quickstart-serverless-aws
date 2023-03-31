@@ -8,11 +8,6 @@ variable "target_env" {
   description = "AWS workload account env (e.g. dev, test, prod, sandbox, unclass)" # PR for sandbox
 }
 
-variable "frontend_build_path" {
-  description = "Path to frontend build files"
-  type        = string
-  default     = "./dist"
-}
 
 variable "s3_bucket_name" {
   description = "Human readable S3 bucket name for labels"
