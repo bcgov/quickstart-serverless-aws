@@ -5,7 +5,4 @@ dynamodb_table: getEnv("dynamo_db_table", "") # dynamodb table for terraform sta
 app_version: get_env("app_version", "") # frontend app version
 s3_bucket: get_env("s3_bucket", "") # s3 bucket for frontend app
 origin_id: get_env("origin_id", "") # cloudfront origin id
-api_gateway_origin_domain: get_env("api_gateway_origin_domain", "") # api gateway domain
-api_gateway_origin_id: get_env("api_gateway_origin_id", "") # api gateway origin id
-api_gateway_path_pattern: get_env("api_gateway_path_pattern", "") # api gateway path pattern
 target_env: get_env("target_env", "") # target environment

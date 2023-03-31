@@ -15,7 +15,7 @@ env:
   TF_LOG: TRACE
   TG_CLIENT_SRC_PATH: client/terragrunt
   TG_WORKSPACE: sandbox
-  
+
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -38,7 +38,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
           aws-region: ca-central-1
-      
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2.0.3
         with:
@@ -56,10 +56,11 @@ jobs:
       - name: Terragrunt Apply
         working-directory: ${{ env.TG_CLIENT_SRC_PATH }}/${{ env.TG_WORKSPACE }}
         env:
+          client_bucket_name: ${{ vars.S3_BACKEND_NAME }}
+          key: "${{ vars.LICENCEPLATE }}/${{ github.event.number }}/quickstart-frontend.tfstate"
+          dynamodb_table: "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}-${{ github.event.number }}"
+          origin_id: ${{ github.event.number }}
           app_version: ${{ github.event.number }}
           target_env: ${{ github.event.number }}
-          s3_bucket: ${{ env.S3_BUCKET }}
-          s3_bucket_assets: ${{ env.S3_BUCKET_ASSETS }}
-          api_gateway_path_pattern: ${{ env.API_GATEWAY_PATH_PATTERN }}
-          origin_id_assets: ${{ env.ORIGIN_ID_ASSETS }}
-        run: terragrunt apply-all --terragrunt-non-interactive
+          s3_bucket: quickstart-frontend-${{ github.event.number }}
+        run: terragrunt run-all apply --terragrunt-non-interactive

@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region for all resources."
-  type    = string
-  default = "ca-central-1"
+  type        = string
+  default     = "ca-central-1"
 }
 
 variable "target_env" {
@@ -11,6 +11,7 @@ variable "target_env" {
 variable "frontend_build_path" {
   description = "Path to frontend build files"
   type        = string
+  default     = "./dist"
 }
 
 variable "s3_bucket_name" {
@@ -18,10 +19,10 @@ variable "s3_bucket_name" {
   type        = string
   default     = "Quickstart Frontend App"
 }
-variable "content_type_map"{
+variable "content_type_map" {
   description = "Map of file extensions to content types"
   type        = map(string)
-  default = {
+  default     = {
     "css"  = "text/css"
     "html" = "text/html"
     "js"   = "application/javascript"
@@ -46,7 +47,7 @@ variable "budget_amount" {
 
 variable "common_tags" {
   description = "Common tags for created resources"
-  default = {
+  default     = {
     Application = "Quickstart Frontend App"
   }
 }

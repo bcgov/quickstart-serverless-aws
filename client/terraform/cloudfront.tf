@@ -56,18 +56,6 @@ resource "aws_cloudfront_distribution" "s3_web_distribution" {
     }
   }
 
-  # This origin is for setting up the api to be accessible from the front-end domain
-  origin {
-    domain_name = var.api_gateway_origin_domain
-    origin_id   = var.api_gateway_origin_id
-
-    custom_origin_config {
-      http_port              = "80"
-      https_port             = "443"
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
-    }
-  }
 
   enabled             = true
   is_ipv6_enabled     = true
@@ -91,22 +79,6 @@ resource "aws_cloudfront_distribution" "s3_web_distribution" {
     response_page_path = "index.html"
   }
 
-  ordered_cache_behavior {
-    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods   = ["GET", "HEAD"]
-    path_pattern           = var.api_gateway_path_pattern
-    target_origin_id       = var.api_gateway_origin_id
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-  }
 
   ordered_cache_behavior {
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
