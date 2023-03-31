@@ -1,5 +1,5 @@
 locals {
-  common_vars = yamldecode(file(find_in_parent_folders("common_vars.yaml")))
+  common_vars = yamldecode(file(find_in_parent_folders("common-vars.yaml")))
 }
 
 # where to find all terraform scripts
@@ -13,11 +13,11 @@ include {
 }
 
 inputs = {
-  app_version               = local.common_vars.app_version
-  s3_bucket                 = local.common_vars.s3_bucket
-  origin_id                 = local.common_vars.origin_id
-  api_gateway_origin_domain = local.common_vars.api_gateway_origin_domain
-  api_gateway_origin_id     = local.common_vars.api_gateway_origin_id
-  api_gateway_path_pattern  = local.common_vars.api_gateway_path_pattern
-  target_env                = local.common_vars.target_env
+  app_version    = local.common_vars.app_version
+  s3_bucket      = local.common_vars.s3_bucket
+  target_env     = local.common_vars.target_env
+  #The below variables are used in the terraform scripts to store backend state in S3
+  bucket         = local.common_vars.bucket
+  key            = local.common_vars.key
+  dynamodb_table = local.common_vars.dynamodb_table
 }
