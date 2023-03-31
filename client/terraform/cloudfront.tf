@@ -49,7 +49,6 @@ resource "aws_cloudfront_distribution" "s3_web_distribution" {
   origin {
     domain_name = aws_s3_bucket.quickstart-frontend.bucket_regional_domain_name
     origin_id   = "${var.origin_id}-${var.target_env}"
-    origin_path = "/${var.app_version}"
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.quickstart-frontend-oai.cloudfront_access_identity_path
