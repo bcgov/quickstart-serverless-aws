@@ -11,7 +11,6 @@ variable "target_env" {
 variable "frontend_build_path" {
   description = "Path to frontend build files"
   type        = string
-  default     = "frontend_build"
   validation {
     condition     = length(fileset(var.frontend_build_path, "**")) > 0
     error_message = "The frontend build path must contain at least one file."

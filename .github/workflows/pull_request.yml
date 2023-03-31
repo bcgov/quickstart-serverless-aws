@@ -48,10 +48,6 @@ jobs:
           cd client
           npm install
           npm run build
-          ln -s ${{ github.workspace }}/client/dist frontend_build
-          cd ~
-          pwd
-          ls -la frontend_build
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v1.3.1
         with:
@@ -60,6 +56,7 @@ jobs:
       - name: Terragrunt Apply
         working-directory: ${{ env.TG_CLIENT_SRC_PATH }}/${{ env.TG_WORKSPACE }}
         env:
+          frontend_build_path: ${{ github.workspace }}/client/dist
           client_bucket_name: ${{ vars.S3_BACKEND_NAME }}
           client_bucket_key: "${{ vars.LICENCEPLATE }}/${{ github.event.number }}/quickstart-frontend.tfstate"
           dynamodb_table: "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}-${{ github.event.number }}"
