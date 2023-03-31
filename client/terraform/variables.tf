@@ -11,7 +11,7 @@ variable "target_env" {
 variable "frontend_build_path" {
   description = "Path to frontend build files"
   type        = string
-  default     = "../../dist"
+  default     = "client/dist"
 }
 
 variable "s3_bucket_name" {
