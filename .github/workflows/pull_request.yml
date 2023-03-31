@@ -48,8 +48,9 @@ jobs:
           cd client
           npm install
           npm run build
-          ln -s dist frontend_build
+          ln -s ${{github.workspace}}/client/dist frontend_build
           cd ~
+          pwd
           ls -la frontend_build
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v1.3.1
