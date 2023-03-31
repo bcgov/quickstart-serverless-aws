@@ -1,7 +1,7 @@
 ---
-bucket: getEnv("client_bucket_name", "") # s3 backend bucket for terraform state
-key: getEnv("client_bucket_key", "") # s3 backend key for terraform state
-dynamodb_table: getEnv("dynamo_db_table", "") # dynamodb table for terraform state locking
+bucket: get_env("client_bucket_name", "") # s3 backend bucket for terraform state
+key: get_env("client_bucket_key", "") # s3 backend key for terraform state
+dynamodb_table: get_env("dynamo_db_table", "") # dynamodb table for terraform state locking
 app_version: get_env("app_version", "") # frontend app version
 s3_bucket: get_env("s3_bucket", "") # s3 bucket for frontend app
 origin_id: get_env("origin_id", "") # cloudfront origin id

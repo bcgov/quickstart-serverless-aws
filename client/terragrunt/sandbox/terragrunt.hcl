@@ -4,7 +4,7 @@ locals {
 
 # where to find all terraform scripts
 terraform {
-  source = "..//..//terraform"
+  source = "../../terraform"
 }
 
 # read the parent folder's terragrunt.hcl file , which generic and environment agnostic.
