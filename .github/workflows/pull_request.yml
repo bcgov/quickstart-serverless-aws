@@ -1,41 +1,46 @@
-name: Plan CI / Pull Request
+name: CI/CD On Pull Request
 
 on:
-  #workflow_dispatch:
+  workflow_dispatch:
   pull_request:
     branches: [main]
 env:
   environment: dev
+  TF_VERSION: 1.2.2
+  TF_LOG: TRACE
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read  # This is required for actions/checkout
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-deploy-api:
+    runs-on: ubuntu-22.04
     environment: dev
     steps:
       - name: checkout the repo and building the Backend
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-go@v4
         with:
-          node-version: 14
+          go-version: '1.19'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
           aws-region: ca-central-1
-
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
       - name: building the backend
         run: |
-          cd server/lambda
-          npm install
+          cd server/lambda/hello_world
+          go mod download
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o app main.go
       - name: Deploying back-end using terraform
         run: |
-
           echo "**************"
           echo "${{ vars.LICENCEPLATE }}"
           echo "**************"
@@ -47,19 +52,41 @@ jobs:
           dynamodb_table = "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}"
           EOF
           terraform init -backend-config=backend.hcl
-          terraform plan
+          terraform apply -auto-approve
 
-      - name: Building front-end and deploying Frontend using terraform
+
+  build-deploy-frontend:
+    runs-on: ubuntu-22.04
+    environment: dev
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
+          aws-region: ca-central-1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - name: Building front-end
         run: |
-          cd server
-          terraform output > ../client/.env
-          cd ../client
+          cd client
           npm install
-          CI=false npm run build
-          cat <<EOF > backend.hcl
-          bucket = "${{ vars.S3_BACKEND_NAME }}"
-          key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/serverless-app.tfstate"
-          dynamodb_table = "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}"
-          EOF
-          terraform init -backend-config=backend.hcl
-          terraform plan
+          npm run build
+
+      - name: Deploying front-end using terraform
+        run: |
+           cd client
+           cat <<EOF > backend.hcl
+           bucket = "${{ vars.S3_BACKEND_NAME }}"
+           key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/frontend.tfstate"
+           dynamodb_table = "terraform-remote-state-lock-frontend-${{ vars.LICENCEPLATE }}"
+           EOF
+           terraform init -backend-config=backend.hcl
+           terraform apply -auto-approve

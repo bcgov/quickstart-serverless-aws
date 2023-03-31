@@ -19,7 +19,7 @@ output "upload_bucket_name" {
 output "function_name" {
   description = "Name of the Lambda function."
 
-  value = aws_lambda_function.greetings_server_lambda.function_name
+  value = aws_lambda_function.hello_world.function_name
 }
 
 output "REACT_APP_API_GW_BASE_URL" {

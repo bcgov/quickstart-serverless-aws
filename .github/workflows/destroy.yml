@@ -42,8 +42,8 @@ jobs:
           cd client
           cat <<EOF > backend.hcl
           bucket = "${{ vars.S3_BACKEND_NAME }}"
-          key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/serverless-app.tfstate"
-          dynamodb_table = "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}"
+          key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/frontend.tfstate"
+          dynamodb_table = "terraform-remote-state-lock-frontend-${{ vars.LICENCEPLATE }}"
           EOF
           terraform init -backend-config=backend.hcl
           terraform destroy -auto-approve
