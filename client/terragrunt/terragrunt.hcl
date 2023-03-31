@@ -1,6 +1,9 @@
 # read environment variables and set them as locals
 locals {
-  common_vars = yamldecode(file("common-vars.yaml"))
+  # needs to be at the top of the file for each terragrunt.hcl file
+  bucket         = get_env("client_bucket_name", "") # s3 backend bucket for terraform state
+  key            = get_env("client_bucket_key", "") # s3 backend key for terraform state
+  dynamodb_table = get_env("dynamo_db_table", "") # dynamodb table for terraform state locking
 }
 
 generate "remote_state" {
@@ -9,9 +12,9 @@ generate "remote_state" {
   contents  = <<EOF
     terraform {
       backend "s3" {
-        bucket = "${local.common_vars.bucket}"
-        key = "${local.common_vars.key}"
-        dynamodb_table = "${local.common_vars.dynamodb_table}"
+        bucket = "${local.bucket}"
+        key = "${local.key}"
+        dynamodb_table = "${local.dynamodb_table}"
       }
     }
   EOF
