@@ -4,56 +4,24 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [main]
+concurrency:
+  # PR open and close use the same group, allowing only one at a time
+  group: pr-${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
 env:
   environment: dev
-  TF_VERSION: 1.2.2
+  TF_VERSION: 1.4.4
+  TG_VERSION: 0.45.0
   TF_LOG: TRACE
+  TG_CLIENT_SRC_PATH: client/terragrunt
+  TG_WORKSPACE: sandbox
+  
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read  # This is required for actions/checkout
 
 jobs:
-  build-deploy-api:
-    runs-on: ubuntu-22.04
-    environment: dev
-    steps:
-      - name: checkout the repo and building the Backend
-        uses: actions/checkout@v3
-
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '1.19'
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
-          aws-region: ca-central-1
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2.0.2
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-      - name: building the backend
-        run: |
-          cd server/lambda/hello_world
-          go mod download
-          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o app main.go
-      - name: Deploying back-end using terraform
-        run: |
-          echo "**************"
-          echo "${{ vars.LICENCEPLATE }}"
-          echo "**************"
-          
-          cd server
-          cat <<EOF > backend.hcl
-          bucket = "${{ vars.S3_BACKEND_NAME }}"
-          key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/serverless-app.tfstate"
-          dynamodb_table = "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}"
-          EOF
-          terraform init -backend-config=backend.hcl
-          terraform apply -auto-approve
-
 
   build-deploy-frontend:
     runs-on: ubuntu-22.04
@@ -70,8 +38,9 @@ jobs:
         with:
           role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
           aws-region: ca-central-1
+      
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2.0.2
+        uses: hashicorp/setup-terraform@v2.0.3
         with:
           terraform_version: ${{ env.TF_VERSION }}
       - name: Building front-end
@@ -79,14 +48,18 @@ jobs:
           cd client
           npm install
           npm run build
+      - name: Setup Terragrunt
+        uses: autero1/action-terragrunt@v1.3.1
+        with:
+          terragrunt_version: ${{ env.TG_VERSION }}
 
-      - name: Deploying front-end using terraform
-        run: |
-           cd client
-           cat <<EOF > backend.hcl
-           bucket = "${{ vars.S3_BACKEND_NAME }}"
-           key = "${{ vars.LICENCEPLATE }}/${{ env.environment }}/frontend.tfstate"
-           dynamodb_table = "terraform-remote-state-lock-frontend-${{ vars.LICENCEPLATE }}"
-           EOF
-           terraform init -backend-config=backend.hcl
-           terraform apply -auto-approve
+      - name: Terragrunt Apply
+        working-directory: ${{ env.TG_CLIENT_SRC_PATH }}/${{ env.TG_WORKSPACE }}
+        env:
+          app_version: ${{ github.event.number }}
+          target_env: ${{ github.event.number }}
+          s3_bucket: ${{ env.S3_BUCKET }}
+          s3_bucket_assets: ${{ env.S3_BUCKET_ASSETS }}
+          api_gateway_path_pattern: ${{ env.API_GATEWAY_PATH_PATTERN }}
+          origin_id_assets: ${{ env.ORIGIN_ID_ASSETS }}
+        run: terragrunt apply-all --terragrunt-non-interactive
