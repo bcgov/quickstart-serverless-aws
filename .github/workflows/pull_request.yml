@@ -12,7 +12,7 @@ env:
   environment: dev
   TF_VERSION: 1.4.4
   TG_VERSION: 0.45.0
-  TF_LOG: TRACE
+  TF_LOG: ERROR
   TG_CLIENT_SRC_PATH: client/terragrunt
   TG_WORKSPACE: sandbox
 
@@ -49,6 +49,8 @@ jobs:
           npm install
           npm run build
           ln -s dist frontend_build
+          cd ~
+          ls -la frontend_build
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v1.3.1
         with:
