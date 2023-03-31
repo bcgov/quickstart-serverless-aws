@@ -1,6 +1,6 @@
 # read environment variables and set them as locals
 locals {
-  common_vars = yamldecode(file("common_vars.yaml"))
+  common_vars = yamldecode(file("common-vars.yaml"))
 }
 
 generate "remote_state" {
