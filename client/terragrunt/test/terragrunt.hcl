@@ -1,10 +1,12 @@
-terraform {
-  source = "../../terraform"
-}
-
 locals {
   common_vars = yamldecode(file(find_in_parent_folders("common-vars.yaml")))
 }
+
+terraform {
+  source = "../../terraform///"
+}
+
+
 
 # read the parent folder's terragrunt.hcl file , which generic and environment agnostic.
 include {

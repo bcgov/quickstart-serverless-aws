@@ -2,6 +2,10 @@ locals {
   common_vars = yamldecode(file(find_in_parent_folders("common-vars.yaml")))
 }
 
+terraform {
+  source = "../../terraform///"
+}
+
 # where to find all terraform scripts
 terraform {
   source = "../../terraform"

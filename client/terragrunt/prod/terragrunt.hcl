@@ -1,6 +1,11 @@
-terraform {
-  source = "../../terraform"
+locals {
+  common_vars = yamldecode(file(find_in_parent_folders("common-vars.yaml")))
 }
+
+terraform {
+  source = "../../terraform///"
+}
+
 
 include {
   path = find_in_parent_folders()
