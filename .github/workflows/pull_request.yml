@@ -59,7 +59,7 @@ jobs:
           frontend_build_path: ${{ github.workspace }}/client/dist
           client_bucket_name: ${{ vars.S3_BACKEND_NAME }}
           client_bucket_key: "${{ vars.LICENCEPLATE }}/${{ github.event.number }}/quickstart-frontend.tfstate"
-          dynamodb_table: "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}-${{ github.event.number }}"
+          dynamodb_table: "terraform-remote-state-lock-${{ vars.LICENCEPLATE }}-frontend-${{ github.event.number }}"
           origin_id: ${{ github.event.number }}
           app_version: ${{ github.event.number }}
           target_env: ${{ github.event.number }}
