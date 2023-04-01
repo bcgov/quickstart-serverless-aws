@@ -34,6 +34,7 @@ variable "content_type_map" {
     "svg"  = "image/svg+xml"
     "txt"  = "text/plain"
     "xml"  = "text/xml"
+    "ico"  = "image/x-icon"
   }
 }
 
